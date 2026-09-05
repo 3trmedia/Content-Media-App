@@ -51,7 +51,7 @@ export default function QuickPage() {
 
   return (
     <div>
-      <PageHeader eyebrow="IG / Client" title="Quick list" subtitle="Jot, batch, film. Fast." />
+      <PageHeader eyebrow="IG / Client" title="Batch" subtitle="Jot, batch, film. Fast." />
       <Section title="Group by">
         <Segmented
           options={[

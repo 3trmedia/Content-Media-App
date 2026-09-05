@@ -59,7 +59,7 @@ export default function BoardPage() {
     <div>
       <PageHeader
         eyebrow={owner === "Personal" ? "dpbenb" : "Blackout"}
-        title="Board"
+        title="Pipeline"
         subtitle={owner === "Personal" ? "YouTube pipeline, idea to posted." : "Blackout pipeline, idea to posted."}
       />
       <Section title="Owner">

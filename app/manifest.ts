@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Content Engine",
     short_name: "Content",
     description: "Idea to posted video for dpbenb — plus a quick jot list for IG and client content.",
-    start_url: "/board",
+    start_url: "/clients",
     display: "standalone",
     orientation: "portrait",
     background_color: "#0b0c0e",

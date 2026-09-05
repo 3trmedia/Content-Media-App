@@ -6,9 +6,9 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 const TABS = [
-  { href: "/board", label: "Board", icon: IconBoard },
-  { href: "/quick", label: "Quick", icon: IconQuick },
   { href: "/clients", label: "Clients", icon: IconClients },
+  { href: "/pipeline", label: "Pipeline", icon: IconBoard },
+  { href: "/batch", label: "Batch", icon: IconQuick },
   { href: "/inbox", label: "Inbox", icon: IconInbox },
 ] as const;
 
