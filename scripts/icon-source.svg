@@ -8,18 +8,21 @@
 
   <rect x="0" y="0" width="1080" height="1080" rx="230" fill="url(#bg)" />
 
-  <!-- clapperboard frame -->
-  <rect x="150" y="195" width="780" height="650" rx="110" fill="none" stroke="#ffffff" stroke-width="70" />
+  <!-- glyph scaled to 3/4 size, centered -->
+  <g transform="translate(540 540) scale(0.75) translate(-540 -540)">
+    <!-- clapperboard frame -->
+    <rect x="150" y="195" width="780" height="650" rx="110" fill="none" stroke="#ffffff" stroke-width="70" />
 
-  <!-- divider between clapper top and body -->
-  <line x1="150" y1="355" x2="930" y2="355" stroke="#ffffff" stroke-width="70" />
+    <!-- divider between clapper top and body -->
+    <line x1="150" y1="355" x2="930" y2="355" stroke="#ffffff" stroke-width="70" />
 
-  <!-- diagonal stripes on the clapper top -->
-  <line x1="255" y1="355" x2="345" y2="195" stroke="#ffffff" stroke-width="58" />
-  <line x1="420" y1="355" x2="510" y2="195" stroke="#ffffff" stroke-width="58" />
-  <line x1="585" y1="355" x2="675" y2="195" stroke="#ffffff" stroke-width="58" />
-  <line x1="750" y1="355" x2="840" y2="195" stroke="#ffffff" stroke-width="58" />
+    <!-- diagonal stripes on the clapper top -->
+    <line x1="255" y1="355" x2="345" y2="195" stroke="#ffffff" stroke-width="58" />
+    <line x1="420" y1="355" x2="510" y2="195" stroke="#ffffff" stroke-width="58" />
+    <line x1="585" y1="355" x2="675" y2="195" stroke="#ffffff" stroke-width="58" />
+    <line x1="750" y1="355" x2="840" y2="195" stroke="#ffffff" stroke-width="58" />
 
-  <!-- play triangle -->
-  <path d="M470 495 L470 705 L660 600 Z" fill="#ffffff" />
+    <!-- play triangle -->
+    <path d="M470 495 L470 705 L660 600 Z" fill="#ffffff" />
+  </g>
 </svg>
