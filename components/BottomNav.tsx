@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 const TABS = [
   { href: "/board", label: "Board", icon: IconBoard },
   { href: "/quick", label: "Quick", icon: IconQuick },
+  { href: "/clients", label: "Clients", icon: IconClients },
   { href: "/inbox", label: "Inbox", icon: IconInbox },
 ] as const;
 
@@ -37,7 +38,7 @@ export default function BottomNav() {
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-50 mx-auto max-w-md border-t border-line bg-surface/95 backdrop-blur">
-      <ul className="grid grid-cols-3">
+      <ul className="grid grid-cols-4">
         {TABS.map(({ href, label, icon: Icon }) => {
           const active = pathname === href || pathname.startsWith(`${href}/`);
           return (
@@ -83,6 +84,27 @@ function IconQuick({ className }: IconProps) {
         stroke="currentColor"
         strokeWidth="1.6"
         strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function IconClients({ className }: IconProps) {
+  return (
+    <svg width="21" height="21" viewBox="0 0 24 24" fill="none" className={className}>
+      <circle cx="9" cy="8" r="3" stroke="currentColor" strokeWidth="1.7" />
+      <path
+        d="M3.5 19.5c0-3 2.5-5.5 5.5-5.5s5.5 2.5 5.5 5.5"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+      />
+      <circle cx="17" cy="8.5" r="2.3" stroke="currentColor" strokeWidth="1.5" />
+      <path
+        d="M15.5 14.3c2.4.3 4.3 2.3 4.5 4.9"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
       />
     </svg>
   );

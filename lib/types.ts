@@ -47,6 +47,8 @@ export type ContentIdea = {
   youtube_video_id: string | null;
 };
 
+export type ContentType = "hook" | "video_idea" | "ad_creative";
+
 export type ContentInbox = {
   id: string;
   raw_text: string;
@@ -55,6 +57,15 @@ export type ContentInbox = {
   created_at: string;
   processed_at: string | null;
   idea_id: string | null;
+  client_id: string | null;
+  content_type: ContentType | null;
+};
+
+export type ContentClient = {
+  id: string;
+  name: string;
+  active: boolean;
+  created_at: string;
 };
 
 export type ContentPackaging = {
