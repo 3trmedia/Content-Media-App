@@ -29,6 +29,7 @@ export default function ClientsPage() {
       .from("content_clients")
       .select("*")
       .eq("active", true)
+      .order("last_active_at", { ascending: false, nullsFirst: false })
       .order("name", { ascending: true });
     const list = (data as ContentClient[]) ?? [];
     setClients(list);
@@ -76,11 +77,14 @@ export default function ClientsPage() {
       client_id: activeClientId,
       content_type: contentType,
     });
-    setSaving(false);
     if (!error) {
+      const last_active_at = new Date().toISOString();
+      await supabase.from("content_clients").update({ last_active_at }).eq("id", activeClientId);
       setText("");
       loadRows(activeClientId);
+      loadClients();
     }
+    setSaving(false);
   };
 
   const addClient = async () => {
@@ -89,14 +93,14 @@ export default function ClientsPage() {
     const supabase = createClient();
     const { data, error } = await supabase
       .from("content_clients")
-      .insert({ name })
+      .insert({ name, last_active_at: new Date().toISOString() })
       .select()
       .single();
     if (!error && data) {
       setNewClientName("");
       setAddingClient(false);
-      setClients((prev) => [...prev, data as ContentClient].sort((a, b) => a.name.localeCompare(b.name)));
       setActiveClientId((data as ContentClient).id);
+      loadClients();
     }
   };
 

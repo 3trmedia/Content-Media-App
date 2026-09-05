@@ -79,6 +79,7 @@ export type ContentClient = {
   name: string;
   active: boolean;
   created_at: string;
+  last_active_at: string | null;
 };
 
 export type ContentPackaging = {
