@@ -17,7 +17,9 @@ export default function QuickPage() {
     const { data } = await supabase
       .from("content_ideas")
       .select("*")
-      .eq("mode", "quick")
+      // Personal and Blackout have real stage pipelines now (see Board) —
+      // Quick is everything else (IG/client jots), not just mode="quick".
+      .not("owner", "in", "(Personal,Blackout)")
       .order("created_at", { ascending: false });
     setIdeas((data as ContentIdea[]) ?? []);
     setLoading(false);

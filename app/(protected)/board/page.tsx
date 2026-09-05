@@ -4,7 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PageHeader, Section, Card, Pill, Segmented, ScorePill, EasePill } from "@/components/ui";
 import { createClient } from "@/lib/supabase/client";
-import type { ContentIdea, Stage } from "@/lib/types";
+import type { ContentIdea, PipelineOwner, Stage } from "@/lib/types";
+import { PIPELINE_OWNERS } from "@/lib/types";
 
 type SortKey = "score" | "recent" | "ease";
 type FilterKey = "active" | "all" | Stage;
@@ -22,23 +23,25 @@ const FILTERS: { value: FilterKey; label: string }[] = [
 
 export default function BoardPage() {
   const router = useRouter();
+  const [owner, setOwner] = useState<PipelineOwner>("Personal");
   const [ideas, setIdeas] = useState<ContentIdea[]>([]);
   const [loading, setLoading] = useState(true);
   const [sort, setSort] = useState<SortKey>("score");
   const [filter, setFilter] = useState<FilterKey>("active");
 
   useEffect(() => {
+    setLoading(true);
     const supabase = createClient();
     (async () => {
       const { data } = await supabase
         .from("content_ideas")
         .select("*")
-        .eq("mode", "youtube")
+        .eq("owner", owner)
         .order("created_at", { ascending: false });
       setIdeas((data as ContentIdea[]) ?? []);
       setLoading(false);
     })();
-  }, []);
+  }, [owner]);
 
   const filtered = useMemo(() => {
     let rows = ideas;
@@ -54,7 +57,18 @@ export default function BoardPage() {
 
   return (
     <div>
-      <PageHeader eyebrow="dpbenb" title="Board" subtitle="YouTube pipeline, idea to posted." />
+      <PageHeader
+        eyebrow={owner === "Personal" ? "dpbenb" : "Blackout"}
+        title="Board"
+        subtitle={owner === "Personal" ? "YouTube pipeline, idea to posted." : "Blackout pipeline, idea to posted."}
+      />
+      <Section title="Owner">
+        <Segmented
+          options={PIPELINE_OWNERS.map((o) => ({ value: o, label: o }))}
+          value={owner}
+          onChange={setOwner}
+        />
+      </Section>
       <Section title="Sort">
         <Segmented
           options={[
@@ -94,13 +108,17 @@ export default function BoardPage() {
               <Card key={idea.id} onClick={() => router.push(`/ideas/${idea.id}`)}>
                 <div className="flex items-start justify-between gap-2">
                   <p className="text-[14px] font-medium leading-snug text-ink">{idea.premise}</p>
-                  <ScorePill score={idea.score} />
+                  {idea.mode === "youtube" ? <ScorePill score={idea.score} /> : null}
                 </div>
                 <div className="mt-2 flex flex-wrap items-center gap-1.5">
                   <Pill tone="accent">{idea.stage}</Pill>
                   <EasePill ease={idea.ease} />
-                  <Pill>{idea.owner}</Pill>
                 </div>
+                {(idea.format || idea.editor) && (
+                  <p className="mt-1.5 text-[12px] text-ink-soft">
+                    {[idea.format, idea.editor && `Editor: ${idea.editor}`].filter(Boolean).join(" · ")}
+                  </p>
+                )}
               </Card>
             ))}
           </div>

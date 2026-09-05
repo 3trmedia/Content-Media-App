@@ -45,7 +45,20 @@ export type ContentIdea = {
   filmed_at: string | null;
   posted_at: string | null;
   youtube_video_id: string | null;
+  // Ported from the old health-app Content tab's content_items table (see
+  // migration comment) — who's cutting it and what named format it is
+  // ("Format #3 - feed teardown"), for the two owners with a real
+  // production pipeline (Personal, Blackout).
+  editor: string | null;
+  format: string | null;
 };
+
+export const PIPELINE_OWNERS = ["Personal", "Blackout"] as const;
+export type PipelineOwner = (typeof PIPELINE_OWNERS)[number];
+
+export function isPipelineOwner(owner: string): owner is PipelineOwner {
+  return (PIPELINE_OWNERS as readonly string[]).includes(owner);
+}
 
 export type ContentType = "hook" | "video_idea" | "ad_creative";
 

@@ -4,7 +4,7 @@ import { use, useEffect, useState } from "react";
 import { PageHeader, Section, Card, Pill, Segmented, Collapsible, ScorePill, EasePill } from "@/components/ui";
 import { createClient } from "@/lib/supabase/client";
 import type { ContentIdea, ContentPackaging, ContentScript, Requirements, Stage } from "@/lib/types";
-import { STAGES } from "@/lib/types";
+import { STAGES, isPipelineOwner } from "@/lib/types";
 
 export default function IdeaDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -15,6 +15,8 @@ export default function IdeaDetailPage({ params }: { params: Promise<{ id: strin
   const [loading, setLoading] = useState(true);
   const [notes, setNotes] = useState("");
   const [reqDraft, setReqDraft] = useState<Requirements>({});
+  const [editor, setEditor] = useState("");
+  const [format, setFormat] = useState("");
 
   const supabase = createClient();
 
@@ -38,6 +40,8 @@ export default function IdeaDetailPage({ params }: { params: Promise<{ id: strin
     setScripts((scriptsRes.data as ContentScript[]) ?? []);
     setNotes(ideaRow?.notes ?? "");
     setReqDraft(ideaRow?.requirements ?? {});
+    setEditor(ideaRow?.editor ?? "");
+    setFormat(ideaRow?.format ?? "");
     setLoading(false);
   };
 
@@ -73,6 +77,13 @@ export default function IdeaDetailPage({ params }: { params: Promise<{ id: strin
 
   const saveRequirements = async () => {
     await supabase.from("content_ideas").update({ requirements: reqDraft }).eq("id", id);
+  };
+
+  const saveProduction = async () => {
+    await supabase
+      .from("content_ideas")
+      .update({ editor: editor || null, format: format || null })
+      .eq("id", id);
   };
 
   const readAloud = () => {
@@ -165,6 +176,21 @@ export default function IdeaDetailPage({ params }: { params: Promise<{ id: strin
           </Card>
         )}
       </Section>
+
+      {isPipelineOwner(idea.owner) && (
+        <Section title="Production">
+          <div className="grid grid-cols-2 gap-2.5">
+            <LabeledInput label="Format" value={format} onChange={setFormat} />
+            <LabeledInput label="Editor" value={editor} onChange={setEditor} />
+          </div>
+          <button
+            onClick={saveProduction}
+            className="mt-2.5 self-start rounded-lg bg-accent px-3.5 py-2 text-[13px] font-medium text-bg"
+          >
+            Save
+          </button>
+        </Section>
+      )}
 
       <Section title="Details">
         <div className="flex flex-col gap-2">
@@ -290,7 +316,7 @@ export default function IdeaDetailPage({ params }: { params: Promise<{ id: strin
         )}
       </Section>
 
-      {idea.mode === "youtube" && (
+      {isPipelineOwner(idea.owner) && (
         <Section title="Stage">
           <div className="flex flex-wrap gap-1.5">
             {STAGES.map((s) => (
