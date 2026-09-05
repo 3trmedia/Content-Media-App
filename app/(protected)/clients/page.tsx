@@ -7,7 +7,7 @@ import type { ContentClient, ContentInbox, ContentType } from "@/lib/types";
 
 const TYPE_LABELS: Record<ContentType, string> = {
   hook: "Hook",
-  video_idea: "Video idea",
+  video_idea: "Content idea",
   ad_creative: "Ad creative",
 };
 
@@ -165,7 +165,7 @@ export default function ClientsPage() {
               <Segmented
                 options={[
                   { value: "hook", label: "Hook" },
-                  { value: "video_idea", label: "Video idea" },
+                  { value: "video_idea", label: "Content idea" },
                   { value: "ad_creative", label: "Ad creative" },
                 ]}
                 value={contentType}
