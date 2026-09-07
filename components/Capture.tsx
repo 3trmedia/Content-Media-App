@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { writeOrQueue } from "@/lib/offline/sync";
 
 // Persistent capture bar, pinned at the top of every protected page. Just
 // text in, row into content_inbox. n8n (not this app) does the processing.
+// Works offline: writeOrQueue queues the insert in IndexedDB when there's no
+// connection and OfflineSync replays it automatically on reconnect.
 export default function Capture() {
   const [text, setText] = useState("");
   const [saving, setSaving] = useState(false);
@@ -14,16 +16,15 @@ export default function Capture() {
     const raw_text = text.trim();
     if (!raw_text || saving) return;
     setSaving(true);
-    const supabase = createClient();
-    const { error } = await supabase
-      .from("content_inbox")
-      .insert({ raw_text, source: "app", status: "unprocessed" });
+    await writeOrQueue({
+      table: "content_inbox",
+      op: "insert",
+      payload: { raw_text, source: "app", status: "unprocessed" },
+    });
     setSaving(false);
-    if (!error) {
-      setText("");
-      setFlash(true);
-      setTimeout(() => setFlash(false), 900);
-    }
+    setText("");
+    setFlash(true);
+    setTimeout(() => setFlash(false), 900);
   };
 
   return (

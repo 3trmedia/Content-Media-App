@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { PageHeader, Section, Card, Pill, Segmented } from "@/components/ui";
 import { createClient } from "@/lib/supabase/client";
+import { writeOrQueue } from "@/lib/offline/sync";
 import type { ContentClient, ContentInbox, ContentType } from "@/lib/types";
 
 const TYPE_LABELS: Record<ContentType, string> = {
@@ -69,22 +70,29 @@ export default function ClientsPage() {
     const raw_text = text.trim();
     if (!raw_text || !activeClientId || saving) return;
     setSaving(true);
-    const supabase = createClient();
-    const { error } = await supabase.from("content_inbox").insert({
-      raw_text,
-      source: "app",
-      status: "unprocessed",
-      client_id: activeClientId,
-      content_type: contentType,
+    const clientId = activeClientId;
+    // writeOrQueue queues both writes in IndexedDB when offline (e.g. at the
+    // range with no signal) and OfflineSync replays them once back online —
+    // nothing here needs to know whether that happened immediately or later.
+    await writeOrQueue({
+      table: "content_inbox",
+      op: "insert",
+      payload: { raw_text, source: "app", status: "unprocessed", client_id: clientId, content_type: contentType },
     });
-    if (!error) {
-      const last_active_at = new Date().toISOString();
-      await supabase.from("content_clients").update({ last_active_at }).eq("id", activeClientId);
-      setText("");
-      loadRows(activeClientId);
+    await writeOrQueue({
+      table: "content_clients",
+      op: "update",
+      payload: { last_active_at: new Date().toISOString() },
+      match: { id: clientId },
+    });
+    setText("");
+    setSaving(false);
+    // A refetch offline would just overwrite the current list with an empty
+    // result — only reload when there's actually a connection to read from.
+    if (navigator.onLine) {
+      loadRows(clientId);
       loadClients();
     }
-    setSaving(false);
   };
 
   const addClient = async () => {

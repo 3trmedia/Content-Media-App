@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import BottomNav from "@/components/BottomNav";
 import SignOutButton from "@/components/SignOutButton";
 import Capture from "@/components/Capture";
+import OfflineSync from "@/components/OfflineSync";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function ProtectedLayout({ children }: { children: React.ReactNode }) {
@@ -27,6 +28,7 @@ export default async function ProtectedLayout({ children }: { children: React.Re
 
   return (
     <div className="mx-auto flex min-h-screen max-w-md flex-col border-x border-line/60 bg-bg">
+      <OfflineSync />
       <SignOutButton />
       <Capture />
       <main className="flex-1 overflow-y-auto pb-24">{children}</main>
